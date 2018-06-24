@@ -1,5 +1,16 @@
 #header,
-#questions-timer,
-#answers {
-    border: 1px solid black;
+#timer,
+#answers,
+.question,
+.choices {
+    text-align: center;
+}
+
+
+/* .choices {
+    width: fit-content;
+} */
+
+.choices:hover {
+    background-color: green;
 }
