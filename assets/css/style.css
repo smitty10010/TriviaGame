@@ -1,15 +1,20 @@
+body {
+    background-image: url(../images/president_background.jpg);
+}
+
+.container {
+    background-color: white;
+}
+
 #header,
 #timer,
 #answers,
+#answer,
+#question,
 .question,
 .choices {
     text-align: center;
 }
-
-
-/* .choices {
-    width: fit-content;
-} */
 
 .choices:hover {
     background-color: green;
