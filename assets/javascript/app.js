@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // create an object that has 10 questions and anwers
+    // established some global variables 
     var timeDisplay;
     var correct = 0;
     var incorrect = 0;
@@ -7,10 +7,11 @@ $(document).ready(function() {
     var answer;
     var correctAnswer;
     var questionIndex = 0;
-
+    // object containing all questions and functions for game
     var triviaGame = {
-        timeRunning: false,
+        // establish the start time
         timer: 15,
+        // create question properties
         questions: [{
                 question: "Which US president was a licensed bartender?",
                 choices: ["Abraham Lincoln", "Barak Obama", "Grover Cleavland", "Benjamin Franklin"],
@@ -22,75 +23,89 @@ $(document).ready(function() {
                 correct_answer: "Andrew Jackson",
             },
             {
-                question: "what is abc3?",
-                choices: ["a3", "b", "c", "d"],
-                correct_answer: "c",
+                question: "This president is the only president to have served more than two terms in office.",
+                choices: ["John Adams", "John Quincy Adams", "Franklin D. Roosevelt", "Ulysses S. Grant"],
+                correct_answer: "Franklin D. Roosevelt",
             },
             {
-                question: "what is abc4?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "Who was the president that reestablished relations with the Peoples Repbulic of China?",
+                choices: ["Gerald Ford", "Richard Nixon", "Benjamin Harrison", "James Garfield"],
+                correct_answer: "Richard Nixon",
             },
             {
-                question: "what is abc5?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "Which president is the only president to blow chunks on a foregin head of state?",
+                choices: ["George H. W. Bush", "Calvin Collidge", "George W. Bush", "Harry S. Truman"],
+                correct_answer: "George H. W. Bush",
             },
             {
-                question: "what is abc6?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "Which president desegregated the military?",
+                choices: ["Bill Clinton", "William Taft", "Abraham Lincoln", "Harry S. Truman"],
+                correct_answer: "Harry S. Truman",
             },
             {
-                question: "what is abc7?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "Who was the first Vice President that ascended to the presidency after a president died in office?",
+                choices: ["Andrew Johnson", "John Adams", "John Tyler", "Calvin Coolidge"],
+                correct_answer: "John Tyler",
             },
             {
-                question: "what is abc8?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "This president is the only president to have never had a party affiliation?",
+                choices: ["James Polk", "George Washington", "Franklin Pierce", "Thomas Jefferson"],
+                correct_answer: "George Washington",
             },
             {
-                question: "what is abc9?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "This former president begged Woodrow Wilson to be allowed to enlist and go fight in Europe during WWI.",
+                choices: ["Theodore Roosevelt", "William Taft", "Warren G. Harding", "Franklin D. Roosevelt"],
+                correct_answer: "Theodore Roosevelt",
             },
             {
-                question: "what is abc10?",
-                choices: ["a", "b", "c", "d"],
-                correct_answer: "c",
+                question: "This president employed a power move where he would negotiate with people while using the toilet in front of them.",
+                choices: ["Bill Clinton", "Donald Trump", "Lyndon B. Johnson", "Herbert Hoover"],
+                correct_answer: "Lyndon B. Johnson",
+            },
+            {
+                question: "",
+                choices: ["", "", "", ""],
+                correct_answer: "",
             },
         ],
+        // on click event to start the game
         startGame: $("#start").on("click", function() {
             triviaGame.startTimer();
             triviaGame.displayQuestionAndChoices();
             triviaGame.answerSelection();
             triviaGame.hideStartButton();
         }),
+        // function to keep the game running once a question is answered
         continueGame: function() {
             triviaGame.timer = 15;
+            triviaGame.clear();
             triviaGame.startTimer();
             triviaGame.displayQuestionAndChoices();
             triviaGame.answerSelection();
             triviaGame.displayFinalScore();
+            console.log(questionIndex);
         },
+        // funciton that starts the timer and displays it to the user
         startTimer: function() {
-            newDiv = $("<div>");
-            $("#timer").html(newDiv);
-            newDiv.text("Time Remaining: " + triviaGame.timer);
+            timeElement = $("<h3>");
+            $("#timer").html(timeElement);
+            timeElement.text("Time Remaining: " + triviaGame.timer);
             timeDisplay = setInterval(triviaGame.countDown, 1000);
         },
+        // function that counts the timer down also marks question incorrect if timer runs out
         countDown: function() {
             triviaGame.timer--;
-            newDiv.text("Time Remaining: " + triviaGame.timer);
+            timeElement.text("Time Remaining: " + triviaGame.timer);
             if (triviaGame.timer === 0) {
                 clearInterval(timeDisplay);
                 incorrect++;
-                triviaGame.continueGame();
+                triviaGame.clear();
+                $("#answer").append("<h3>Sorry, times up. The correct answer is " + correctAnswer + ".</h3>");
+                setTimeout(triviaGame.continueGame, 3000);
+
             }
         },
-
+        // function that displays the questions and choices
         displayQuestionAndChoices: function() {
             questionElement = $("<h2 class=question>");
             question = triviaGame.questions[questionIndex].question;
@@ -99,51 +114,84 @@ $(document).ready(function() {
             $("#question").html(questionElement);
             for (i = 0; i < 4; i++) {
                 answers = $("<h4 class=choices>");
-                $("#choices").append(answers.text(triviaGame.questions[questionIndex].choices[i]));
+                answers.text(triviaGame.questions[questionIndex].choices[i])
+                $("#choices").append(answers);
             }
-            questionIndex++;
+
         },
+        // on click event that selects the player's answer
         answerSelection: function() {
             $(".choices").on("click", function() {
                 answer = $(this).text();
+                questionIndex++;
                 clearInterval(timeDisplay);
                 triviaGame.checkAnswer();
             })
         },
+        // function that checks the answer
         checkAnswer: function() {
             if (answer === correctAnswer) {
-                alert("correct");
                 correct++;
-                console.log("correct: " + correct);
-                triviaGame.continueGame();
+                triviaGame.clear();
+                $("#answer").append("<h3>Correct!</h3>");
+                setTimeout(triviaGame.continueGame, 3000);
+
             } else {
-                alert("incorrect");
                 incorrect++;
-                console.log("incorrect: " + incorrect);
-                triviaGame.continueGame();
+                triviaGame.clear();
+                $("#answer").append("<h3>Sorry, the correct answer is " + correctAnswer + ".</h3>");
+                setTimeout(triviaGame.continueGame, 3000);
+
             }
         },
+        // clears all html inputs
+        clear: function() {
+            $("#choices, #questions, #correct, #incorrect, #answer").empty();
+        },
+
+
+        //displays the results after all 10 questions have been viewed
         displayFinalScore: function() {
-            if (questionIndex > 3) {
-                $("#answers").append(correct, incorrect);
+            if (questionIndex > 9) {
+                var correctElement = $("<h3 id=correct>");
+                var incorrectElement = $("<h3 id=incorrect>");
+                correctElement.text("Correct Answers: " + correct);
+                incorrectElement.text("Incorrect Answers: " + incorrect);
+                $("#answer").prepend(correctElement, incorrectElement);
+                clearInterval(timeDisplay);
+                $("#choices, .question, #timer").empty();
+                triviaGame.showRestartButton();
             }
         },
+        //Hides the start button
         hideStartButton: function() {
             $("#start").hide();
-        }
+        },
+        // hides restart button
+        hideRestartButton: function() {
+            $("#restart").hide();
+        },
+        // shows restart button
+        showRestartButton: function() {
+            $("#restart").show();
+        },
+        // on click event for restart button
+        restartButton: $("#restart").on("click", function() {
+            questionIndex = 0;
+            clearInterval(timeDisplay);
+            question.timer = 15;
+            triviaGame.clear();
+            triviaGame.startTimer();
+            triviaGame.displayQuestionAndChoices();
+            triviaGame.answerSelection();
+            triviaGame.hideStartButton();
+            triviaGame.hideRestartButton();
+            correct = 0;
+            incorrect = 0;
+        }),
 
 
     };
-    console.log(triviaGame.questions);
-    // create an on click event to start the whole game
-
-
-    // triviaGame.startTimer();
-
-    // on click shows first question and starts the timer
-    // timer will last 15 seconds per a question
-    // if timer runs out then answer is displayed and then moves on to next question
-    // if player selects the correct answer then correct is displayed for 5 seconds then moves on to next question
-    // if player selects incorrect answer then the correct answer is displayed for 5 seconds then moves on to next question
-    // after question 10 is finished then display total wrong answers and total correct ansers and a reset button
+    // hides the restart button at the begining
+    triviaGame.hideRestartButton();
 })
