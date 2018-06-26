@@ -99,6 +99,7 @@ $(document).ready(function() {
             if (triviaGame.timer === 0) {
                 clearInterval(timeDisplay);
                 incorrect++;
+                questionIndex++;
                 triviaGame.clear();
                 $("#answer").append("<h3>Sorry, times up. The correct answer is " + correctAnswer + ".</h3>");
                 setTimeout(triviaGame.continueGame, 3000);
